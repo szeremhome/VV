@@ -2,8 +2,8 @@ import './style.css'
 
 console.log("AAA");
 
-// const buildId = () => import.meta.env.VITE_BUILD_ID || "ID";
-// const buildDt = () => import.meta.env.VITE_BUILD_DT || "DT";
+const buildId = () => import.meta.env.VITE_BUILD_ID || "ID";
+const buildDt = () => import.meta.env.VITE_BUILD_DT || "DT";
 
 console.log({ Id: buildId(), Dt: buildDt() });
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
