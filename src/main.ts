@@ -25,4 +25,3 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
     </footer>
 `
 console.log("CCC");
-        // <span>wersja:${buildId()}</span> &nbsp;|&nbsp;<span>z dani ${buildDt()}</span>
