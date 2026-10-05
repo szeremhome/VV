@@ -31,9 +31,9 @@ jobs:
       - name: Set environment variable
         run: | 
           echo "TZ='Europe/Warsaw'" >> $GITHUB_ENV
-          echo "BUILD_TIME=$(date +'%T')" > $GITHUB_ENV
-          echo "VITE_BUILD_DT=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" > $GITHUB_ENV
-          echo "VITE_BUILD_ID=${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}" > $GITHUB_ENV
+          echo "BUILD_TIME=$(date +'%T')" >> $GITHUB_ENV
+          echo "VITE_BUILD_DT=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_ENV
+          echo "VITE_BUILD_ID=${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
 
 
       - name: Use environment variable
@@ -65,7 +65,10 @@ jobs:
 
       - name: Sprawdzam
         run: |
-          pwd; ls -lah; cat .env.production
+          pwd
+          ls -lah
+          env
+          cat .env.production
 
   # deploy:
   #   environment:
