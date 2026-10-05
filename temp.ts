@@ -1,0 +1,1 @@
+        // <span>wersja:${buildId()}</span> &nbsp;|&nbsp;<span>z dani ${buildDt()}</span>
