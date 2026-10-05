@@ -1,28 +1,14 @@
 import './style.css'
 
-function formatDate(d: Date): string {
-  // np. 2026-10-05 14:23
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} `
-       + `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
 // Data builda – tutaj czas uruchomienia, ale możesz „zamrozić” ją build-time (patrz niżej)
-const buildDt = import.meta.env.VITE_BUILD_DT 
+const buildDt = () => import.meta.env.VITE_BUILD_DT
   ? new Date(import.meta.env.VITE_BUILD_DT)
   : new Date();
-const buildDtElement = document.getElementById('build-dt');
-if (buildDtElement) buildDtElement.textContent = `Build date: ${formatDate(buildDt)}`;
 
 // Build ID – z env Vite
-const buildId = import.meta.env.VITE_BUILD_ID ?? 'dev';
-const buildIdElement = document.getElementById('build-id');
-if (buildIdElement) buildIdElement.textContent = `Build id: ${buildId}`;
+const buildId = () => import.meta.env.VITE_BUILD_ID ?? 'dev';
 
-
-const app = document.querySelector<HTMLDivElement>('#app');
-if (app) {
-  app.innerHTML = `
+document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
     <main class="container">
       <h1>Moja aplikacja 2</h1>
 
@@ -34,7 +20,9 @@ if (app) {
         Status: OK
       </p>
     </main>
-`;
-} else {
-  console.error("Nie znaleziono elementu #app");
-}
+    <footer>
+      <small>
+        <span id="build-dt">${buildDt()}</span> &nbsp;|&nbsp; <span id="build-id">${buildId()}</span>
+      </small>
+    </footer>
+`
