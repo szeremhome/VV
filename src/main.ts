@@ -24,7 +24,7 @@ const app = document.querySelector<HTMLDivElement>('#app');
 if (app) {
   app.innerHTML = `
     <main class="container">
-      <h1>Moja aplikacja</h1>
+      <h1>Moja aplikacja 2</h1>
 
       <p>
         Aplikacja działa na GitHub Pages.
