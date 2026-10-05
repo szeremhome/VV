@@ -14,15 +14,28 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    env:
+      APP_URL: steps.deployment.outputs.page_url
+      VITE_BUILD_DT: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+      VITE_BUILD_ID: ${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}
+
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Sprawdzenie zmiennych
+        run: |
+          echo "APP_URL: $APP_URL"
+          echo "VITE_BUILD_DT: $VITE_BUILD_DT"
+          echo "VITE_BUILD_ID: $VITE_BUILD_ID"
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -33,11 +46,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # - name: Ustaw metadane builda
-      #   shell: bash
-      #   run: |
-      #     echo "VITE_BUILD_DT=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_ENV"
-      #     echo "VITE_BUILD_ID=${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}" >> "$GITHUB_ENV"
                   
       - name: Build
         run: npm run build
@@ -51,24 +59,24 @@ jobs:
         run: |
           pwd; ls -lah;
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # deploy:
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
 
-    needs: build
+  #   needs: build
 
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  #   steps:
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v4
 
-      - name: Notify ntfy
-        if: success()
-        env:
-          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
-          NTFY_TOPIC: ${{ vars.NTFY_TOPIC }}
-        run: |
-          echo "AAAAAAAAAA ${{ steps.deployment.outputs.page_url }} AAAAAAAAAAAAA"; pwd; ls -lah;
+  #     - name: Notify ntfy
+  #       if: success()
+  #       env:
+  #         NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
+  #         NTFY_TOPIC: ${{ vars.NTFY_TOPIC }}
+  #       run: |
+  #         echo "AAAAAAAAAA ${{ steps.deployment.outputs.page_url }} AAAAAAAAAAAAA"; pwd; ls -lah;
