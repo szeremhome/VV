@@ -80,6 +80,12 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        
+      - name: Sprawdzam
+        run: |
+          env
+          pwd
+          ls -lah
 
   #     - name: Notify ntfy
   #       if: success()
