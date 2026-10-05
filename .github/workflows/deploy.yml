@@ -92,9 +92,6 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         
-      # - name: Sprawdzam
-      #   run: |
-
       - name: Notify ntfy
         if: success()
         env:
