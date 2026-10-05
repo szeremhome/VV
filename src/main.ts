@@ -2,8 +2,8 @@ import './style.css'
 
 console.log("AAA");
 
-const buildId = () => import.meta.env.VITE_BUILD_ID || "ID";
-const buildDt = () => import.meta.env.VITE_BUILD_DT || "DT";
+// const buildId = () => import.meta.env.VITE_BUILD_ID || "ID";
+// const buildDt = () => import.meta.env.VITE_BUILD_DT || "DT";
 
 console.log({ Id: buildId(), Dt: buildDt() });
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
@@ -20,8 +20,9 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
     </main>
     <footer>
       <small>
-        <span>wersja:${buildId()}</span> &nbsp;|&nbsp;<span>z dani ${buildDt()}</span>
+
       </small>
     </footer>
 `
 console.log("CCC");
+        // <span>wersja:${buildId()}</span> &nbsp;|&nbsp;<span>z dani ${buildDt()}</span>
