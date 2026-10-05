@@ -43,10 +43,10 @@ jobs:
           echo "The value of VITE_BUILD_ID is $VITE_BUILD_ID"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
