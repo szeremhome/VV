@@ -33,6 +33,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Ustaw metadane builda
+        shell: bash
+        run: |
+          echo "VITE_BUILD_DATE=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_ENV"
+          echo "VITE_BUILD_ID=${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}" >> "$GITHUB_ENV"
+                  
       - name: Build
         run: npm run build
 
@@ -61,4 +67,4 @@ jobs:
           NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
           NTFY_TOPIC: ${{ vars.NTFY_TOPIC }}
         run: |
-          echo "AAAAAAAAAAAAAAAAAAAAAAA"; pwd; ls -lah;
+          echo "AAAAAAAAAA ${{ steps.deployment.outputs.page_url }} AAAAAAAAAAAAA"; pwd; ls -lah;
