@@ -28,14 +28,21 @@ jobs:
 
 
     steps:
+      - name: Set environment variable
+        run: | 
+          echo "BUILD_TIME=$(date +'%T')" >> $GITHUB_ENV
+          echo "VITE_BUILD_DT=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_ENV
+          echo "VITE_BUILD_ID=${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
+
+
+      - name: Use environment variable
+        run: |
+          echo "Deploying at $BUILD_TIME"
+          echo "The value of VITE_BUILD_DT is $VITE_BUILD_DT"
+          echo "The value of VITE_BUILD_ID is $VITE_BUILD_ID"
+
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Sprawdzenie zmiennych
-        run: |
-          echo "APP_URL: $APP_URL"
-          echo "VITE_BUILD_DT: $VITE_BUILD_DT"
-          echo "VITE_BUILD_ID: $VITE_BUILD_ID"
 
       - name: Setup Node
         uses: actions/setup-node@v4
