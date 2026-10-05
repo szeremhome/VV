@@ -28,77 +28,77 @@ jobs:
       # .${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}
 
     steps:
-      # - name: Set environment variable
-      #   run: | 
-      #     # echo "TZ='Europe/Warsaw'" >> $GITHUB_ENV
-      #     echo "BUILD_TIME=$(date +'%T')" >> $GITHUB_ENV
-      #     echo "VITE_BUILD_DT=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_ENV
-      #     echo "VITE_BUILD_ID=${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
+      - name: Set environment variable
+        run: | 
+          # echo "TZ='Europe/Warsaw'" >> $GITHUB_ENV
+          echo "BUILD_TIME=$(date +'%T')" >> $GITHUB_ENV
+          echo "VITE_BUILD_DT=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_ENV
+          echo "VITE_BUILD_ID=${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
 
 
-      # - name: Use environment variable
-      #   run: |
-      #     echo "Deploying at $BUILD_TIME"
-      #     echo "The value of VITE_BUILD_DT is $VITE_BUILD_DT"
-      #     echo "The value of VITE_BUILD_ID is $VITE_BUILD_ID"
-
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v7
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-                  
-      - name: Build
-        run: npm run build
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: './dist'
-
-      # - name: Sprawdzam
-      #   run: |
-      #     env
-      #     pwd
-      #     ls -lah ./dist
-
-  deploy:    
-    # Add a dependency to the build job
-    needs: build
-
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source    
-    
-    # Deploy to the github-pages environment
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    # Specify runner + deployment step
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-        
-      - name: Notify ntfy
-        if: success()
-        env:
-          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
-          NTFY_TOPIC: ${{ vars.NTFY_TOPIC }}
+      - name: Use environment variable
         run: |
-          env
-          pwd
-          ls -lah
-          echo "AAAAAAAAAA ${url} AAAAAAAAAAAAA"; 
+          echo "Deploying at $BUILD_TIME"
+          echo "The value of VITE_BUILD_DT is $VITE_BUILD_DT"
+          echo "The value of VITE_BUILD_ID is $VITE_BUILD_ID"
+
+  #     - name: Checkout
+  #       uses: actions/checkout@v6
+
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v7
+  #       with:
+  #         node-version: 24
+  #         cache: npm
+
+  #     - name: Install dependencies
+  #       run: npm ci
+                  
+  #     - name: Build
+  #       run: npm run build
+
+  #     - name: Configure GitHub Pages
+  #       uses: actions/configure-pages@v5
+
+  #     - name: Upload Pages artifact
+  #       uses: actions/upload-pages-artifact@v4
+  #       with:
+  #         path: './dist'
+
+  #     # - name: Sprawdzam
+  #     #   run: |
+  #     #     env
+  #     #     pwd
+  #     #     ls -lah ./dist
+
+  # deploy:    
+  #   # Add a dependency to the build job
+  #   needs: build
+
+  #   # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+  #   permissions:
+  #     pages: write      # to deploy to Pages
+  #     id-token: write   # to verify the deployment originates from an appropriate source    
+    
+  #   # Deploy to the github-pages environment
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+
+  #   # Specify runner + deployment step
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v4
+        
+  #     - name: Notify ntfy
+  #       if: success()
+  #       env:
+  #         NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
+  #         NTFY_TOPIC: ${{ vars.NTFY_TOPIC }}
+  #       run: |
+  #         env
+  #         pwd
+  #         ls -lah
+  #         echo "AAAAAAAAAA ${url} AAAAAAAAAAAAA"; 
