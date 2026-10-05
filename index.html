@@ -3,22 +3,20 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VV</title>
 </head>
 
 <body>
   <h1>TEST</h1>
   <div id="app"></div>
-  <script type="module" src="/src/main.ts"></script>
 
   <footer>
-    <small>
-      Build: <code>%VITE_BUILD_ID%</code>
-      · Zbudowano: <time>%VITE_BUILD_DATE%</time>
-    </small>
+    <span id="build-dt"></span>
+    &nbsp;|&nbsp;
+    <span id="build-id"></span>
   </footer>
-</body>
+
+  <script type="module" src="./src/main.ts"></script>
+  <body>
 
 </html>
