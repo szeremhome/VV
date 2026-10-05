@@ -69,7 +69,7 @@ jobs:
           ls -lah
           env
           cat .env.production
-          cat /dist/index.html
+          cat dist/index.html
 
   deploy:
   #   environment:
