@@ -14,7 +14,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Set environment variable
         run: | 
-          echo "TZ='Europe/Warsaw'" >> $GITHUB_ENV
+          # echo "TZ='Europe/Warsaw'" >> $GITHUB_ENV
           echo "BUILD_TIME=$(date +'%T')" >> $GITHUB_ENV
           echo "VITE_BUILD_DT=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_ENV
           echo "VITE_BUILD_ID=${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
@@ -61,13 +61,13 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: './dist'
 
       - name: Sprawdzam
         run: |
           env
           pwd
-          ls -lah dist
+          ls -lah ./dist
 
   deploy:
     runs-on: ubuntu-latest
