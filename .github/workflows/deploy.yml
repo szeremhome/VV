@@ -23,13 +23,14 @@ jobs:
       name: github-pages
     env:
       APP_URL: steps.deployment.outputs.page_url
-      VITE_BUILD_DT: $(date -u '+%Y-%m-%d %H:%M:%S CET')
+      VITE_BUILD_DT: $(date '+%Y-%m-%d %H:%M:%S CET')
       VITE_BUILD_ID: ${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}
 
 
     steps:
       - name: Set environment variable
         run: | 
+          TZ='Europe/Warsaw'
           echo "BUILD_TIME=$(date +'%T')" >> $GITHUB_ENV
           echo "VITE_BUILD_DT=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_ENV
           echo "VITE_BUILD_ID=${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
@@ -64,7 +65,7 @@ jobs:
 
       - name: Sprawdzam
         run: |
-          pwd; ls -lah;
+          pwd; ls -lah; cat .env.production
 
   # deploy:
   #   environment:
