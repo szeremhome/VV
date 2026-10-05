@@ -98,6 +98,7 @@ jobs:
           NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
           NTFY_TOPIC: ${{ vars.NTFY_TOPIC }}
         run: |
+          env
           pwd
           ls -lah
-          echo "AAAAAAAAAA $url AAAAAAAAAAAAA"; 
+          echo "AAAAAAAAAA ${url} AAAAAAAAAAAAA"; 

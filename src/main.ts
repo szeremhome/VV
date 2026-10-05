@@ -1,16 +1,14 @@
 import './style.css'
 
-// Data builda – tutaj czas uruchomienia, ale możesz „zamrozić” ją build-time (patrz niżej)
-const buildDt = () => import.meta.env.VITE_BUILD_DT
-  ? new Date(import.meta.env.VITE_BUILD_DT)
-  : new Date();
+console.log("AAA");
 
-// Build ID – z env Vite
-const buildId = () => import.meta.env.VITE_BUILD_ID ?? 'dev';
+const buildId = () => import.meta.env.VITE_BUILD_ID || "ID";
+const buildDt = () => import.meta.env.VITE_BUILD_DT || "DT";
 
+console.log({ Id: buildId(), Dt: buildDt() });
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
     <main class="container">
-      <h1>Moja aplikacja 2</h1>
+      <h1>Moja aplikacja</h1>
 
       <p>
         Aplikacja działa na GitHub Pages.
@@ -22,7 +20,8 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
     </main>
     <footer>
       <small>
-        <span id="build-dt">${buildDt()}</span> &nbsp;|&nbsp; <span id="build-id">${buildId()}</span>
+        <span>wersja:${buildId()}</span> &nbsp;|&nbsp;<span>z dani ${buildDt()}</span>
       </small>
     </footer>
 `
+console.log("CCC");
