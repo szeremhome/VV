@@ -65,11 +65,9 @@ jobs:
 
       - name: Sprawdzam
         run: |
-          pwd
-          ls -lah
           env
-          cat .env.production
-          cat dist/index.html
+          pwd
+          ls -lah dist
 
   deploy:
     runs-on: ubuntu-latest
