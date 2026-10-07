@@ -83,12 +83,31 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         
-      - name: Notify ntfy
+        
+      - name: Powiadomienie o sukcesie (ntfy)
+        # Warunek: uruchom ten krok tylko jeśli poprzednie zakończyły się sukcesem
         if: success()
         env:
-          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
-          NTFY_TOPIC: ${{ vars.NTFY_TOPIC }}
+          NTFY_URL: "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}"
         run: |
-          env
-          pwd
-          ls -lah
+          curl -s \
+            -H "Title: ✅ Deployment Udany!" \
+            -H "Priority: high" \
+            -H "Tags: rocket" \
+            -H "Actions: view, Otwórz GitHub, https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            -d "Deployment repozytorium ${{ github.repository }} na gałąź ${{ github.ref_name }} zakończył się sukcesem." \
+            $NTFY_URL
+
+      - name: Powiadomienie o błędzie (ntfy)
+        # Warunek: uruchom ten krok tylko jeśli któryś z poprzednich kroków zawiódł
+        if: failure()
+        env:
+          NTFY_URL: "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}"
+        run: |
+          curl -s \
+            -H "Title: ❌ Deployment Zawiódł!" \
+            -H "Priority: urgent" \
+            -H "Tags: warning" \
+            -H "Actions: view, Sprawdź logi, https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            -d "Deployment repozytorium ${{ github.repository }} na gałąź ${{ github.ref_name }} zakończył się błędem." \
+            $NTFY_URL

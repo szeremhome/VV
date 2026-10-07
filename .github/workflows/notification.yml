@@ -1,0 +1,21 @@
+name: Scheduled NTFY Notification
+
+on:
+  schedule:
+    # Uruchamia się codziennie o 8:00 UTC
+    - cron: '0 8 * * *'
+
+jobs:
+  send-scheduled-notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wyślij powiadomienie przez ntfy
+        env:
+          NTFY_URL: "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}"
+        run: |
+          curl -s \
+            -H "Title: Raport z GitHuba" \
+            -H "Priority: default" \
+            -H "Tags: calendar" \
+            -d "Czas na codzienne przypomnienie! Workflow scheduler'a działa poprawnie." \
+            $NTFY_URL
