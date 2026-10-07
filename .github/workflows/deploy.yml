@@ -57,27 +57,11 @@ jobs:
       - name: Build
         run: npm run build
 
-      # - name: Configure GitHub Pages
-      #   uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          # name: my-artifact
           path: './dist'
-          # retention-days: 1
-          # compression-level: 0
-
-      # - name: Deploy to GitHub Pages
-      #   id: deployment
-      #   uses: actions/deploy-pages@v4          
-
-
-  #     - name: Sprawdzam
-  #       run: |
-  #         env
-  #         pwd
-  #         ls -lah ./dist
 
   deploy:    
     # Add a dependency to the build job

@@ -2,8 +2,8 @@ import './style.css'
 
 console.log("AAA");
 
-const buildId = () => import.meta.env.VITE_BUILD_ID || "ID";
-const buildDt = () => import.meta.env.VITE_BUILD_DT || "DT";
+const buildId = (): String => import.meta.env.VITE_BUILD_ID || "ID";
+const buildDt = (): Date => import.meta.env.VITE_BUILD_DT || new Date();
 
 console.log({ Id: buildId(), Dt: buildDt() });
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
@@ -20,7 +20,9 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
     </main>
     <footer>
       <small>
-
+        <span>Wersja: ${buildId()}</span>
+        &nbsp;|&nbsp;
+        <span>z dnia: ${buildDt().toLocaleDateString()}</span>
       </small>
     </footer>
 `
