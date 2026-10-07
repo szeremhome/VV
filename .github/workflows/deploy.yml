@@ -65,11 +65,11 @@ jobs:
         with:
           path: './dist'
 
-  #     # - name: Sprawdzam
-  #     #   run: |
-  #     #     env
-  #     #     pwd
-  #     #     ls -lah ./dist
+      - name: Sprawdzam
+        run: |
+          env
+          pwd
+          ls -lah ./dist
 
   deploy:    
     # Add a dependency to the build job
@@ -101,4 +101,3 @@ jobs:
           env
           pwd
           ls -lah
-          echo "AAAAAAAAAA ${url} AAAAAAAAAAAAA"; 
