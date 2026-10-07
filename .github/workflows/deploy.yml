@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
     env:
@@ -57,11 +57,16 @@ jobs:
       - name: Build
         run: npm run build
 
-
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
           path: './dist'
+
+      - name: Sprawdzam 
+        run: |
+          ls ./dist 
+          cat ./dist/index.html          
+
 
   deploy:    
     # Add a dependency to the build job

@@ -3,7 +3,7 @@ import './style.css'
 console.log("AAA");
 
 const buildId = (): String => import.meta.env.VITE_BUILD_ID || "ID";
-const buildDt = (): Date => import.meta.env.VITE_BUILD_DT || new Date();
+const buildDt = (): String => import.meta.env.VITE_BUILD_DT || "DT";
 
 console.log({ Id: buildId(), Dt: buildDt() });
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
@@ -22,9 +22,8 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
       <small>
         <samp>Wersja: ${buildId()}</samp>
         &nbsp;|&nbsp;
-        
+        <samp>Wersja: ${buildDt()}</samp>
       </small>
     </footer>
 `
-// <span>z dnia: ${buildDt().toLocaleDateString()}</span>
 console.log("CCC");
