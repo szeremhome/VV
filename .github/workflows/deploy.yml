@@ -67,7 +67,6 @@ jobs:
           ls ./dist 
           cat ./dist/index.html          
 
-
   deploy:    
     # Add a dependency to the build job
     needs: build
