@@ -22,7 +22,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
       <small>
         <samp>Wersja: ${buildId()}</samp>
         &nbsp;|&nbsp;
-        <samp>Wersja: ${buildDt()}</samp>
+        <samp>z dnia: ${buildDt()}</samp>
       </small>
     </footer>
 `
