@@ -28,20 +28,20 @@ jobs:
           BASE: "${{ secrets.V_BASE }}"
           ACCESS_TOKEN: "${{ secrets.V_ACCESS_TOKEN}}"
           NTFY_URL: "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}"
-          SCHEDULE: ${{ github.event.schedule }}
-          INPUT_MODE: ${{ inputs.mode }}
-          INPUT_TEMP: ${{ inputs.temperature }}          
+          # SCHEDULE: ${{ github.event.schedule }}
+          # INPUT_MODE: ${{ inputs.mode }}
+          # INPUT_TEMP: ${{ inputs.temperature }}          
         run: |
-          set -euo pipefail
+          # set -euo pipefail
 
-          case "$SCHEDULE" in
-            "0 4 * * 1-5")  MODE=heating; TEMPERATURE=21 ;;
-            "0 5 * * 1-5")  MODE=heating; TEMPERATURE=18 ;;
-            "0 20 * * 1-5") MODE=standby; TEMPERATURE=0 ;;
-            "0 6 * * 0,6")  MODE=heating; TEMPERATURE=20 ;;
-            *)              MODE="${INPUT_MODE:-heating}"; TEMPERATURE="${INPUT_TEMP:-21}" ;;
-          esac
-          echo "Tryb: $MODE, temperatura: $TEMPERATURE"
+          # case "$SCHEDULE" in
+          #   "0 4 * * 1-5")  MODE=heating; TEMPERATURE=21 ;;
+          #   "0 5 * * 1-5")  MODE=heating; TEMPERATURE=18 ;;
+          #   "0 20 * * 1-5") MODE=standby; TEMPERATURE=0 ;;
+          #   "0 6 * * 0,6")  MODE=heating; TEMPERATURE=20 ;;
+          #   *)              MODE="${INPUT_MODE:-heating}"; TEMPERATURE="${INPUT_TEMP:-21}" ;;
+          # esac
+          # echo "Tryb: $MODE, temperatura: $TEMPERATURE"
 
           # 1. Aktywacja CO
           curl -fsS -X POST "$BASE/heating.circuits.0.operating.modes.active/commands/setMode" \
