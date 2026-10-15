@@ -1,4 +1,4 @@
-name: V Scheduled setup and notify
+name: Scheduled VV setup and notify
 
 on:
   workflow_dispatch:
@@ -32,6 +32,9 @@ jobs:
           # INPUT_MODE: ${{ inputs.mode }}
           # INPUT_TEMP: ${{ inputs.temperature }}          
         run: |
+          set -x
+          echo "Starting VV setup and notify..."
+
           # set -euo pipefail
 
           # case "$SCHEDULE" in
@@ -62,3 +65,5 @@ jobs:
             -H "Tags: calendar" \
             -d "Aktywacja CO i ustawienie temperatury 35." \
             $NTFY_URL
+
+          echo "Exit code: $?"
