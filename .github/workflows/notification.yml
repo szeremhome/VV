@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Wyślij powiadomienie przez ntfy
         env:
-          BASE: "https://api.viessmann-climatesolutions.com/iot/v2/features/installations/${{ V_INSTALLATION_ID }}/gateways/${{ V_GATEWAY_SERIAL }}/devices/0/features
+          BASE: "https://api.viessmann-climatesolutions.com/iot/v2/features/installations/${{ V_INSTALLATION_ID }}/gateways/${{ V_GATEWAY_SERIAL }}/devices/0/features"
           ACCESS_TOKEN: "${{ secrets.V_ACCESS_TOKEN}}"
           NTFY_URL: "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}"
           SCHEDULE: ${{ github.event.schedule }}
