@@ -1,0 +1,409 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viessmann POC</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --green: #4ade80;
+      --red: #f87171;
+      --orange: #fb923c;
+      --yellow: #facc15;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      padding: 1rem;
+    }
+
+    .container { max-width: 480px; margin: 0 auto; }
+
+    h1 {
+      font-size: 1.25rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h2 {
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .stat-value.temp { color: var(--orange); }
+    .stat-value.cold { color: var(--accent); }
+    .stat-value.hot { color: var(--red); }
+    .stat-value.ok { color: var(--green); }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .control-row label {
+      flex: 1;
+      font-size: 0.875rem;
+    }
+
+    .control-row input[type="range"] {
+      flex: 2;
+      accent-color: var(--accent);
+    }
+
+    .control-row .temp-display {
+      width: 3.5rem;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--orange);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    button:hover { opacity: 0.85; }
+    button:active { opacity: 0.7; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn-connect {
+      background: var(--green);
+      color: var(--bg);
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: white;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-on { background: var(--green); color: var(--bg); }
+    .badge-off { background: var(--border); color: var(--muted); }
+
+    .message {
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .message-success { background: #064e3b; color: var(--green); }
+    .message-error { background: #450a0a; color: var(--red); }
+
+    .loading {
+      text-align: center;
+      color: var(--muted);
+      padding: 2rem;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔥 Viessmann Vitodens 100</h1>
+
+    <div id="msg" class="message hidden"></div>
+
+    <!-- Sekcja: Połączenie -->
+    <div id="connect-section" class="card">
+      <h2>Połączenie</h2>
+      <p id="connection-status" style="margin-bottom: 0.75rem; font-size: 0.875rem; color: var(--muted);">
+        Sprawdzanie...
+      </p>
+      <a href="/auth/login">
+        <button class="btn-connect">🔗 Połącz z Viessmann</button>
+      </a>
+    </div>
+
+    <!-- Sekcja: Status (ukryta do połączenia) -->
+    <div id="status-section" class="hidden">
+      <div class="card">
+        <h2>Status pieca</h2>
+        <div class="status-grid">
+          <div class="stat">
+            <span class="stat-label">CO (zadana)</span>
+            <span id="s-heating" class="stat-value temp">--°</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">CWU (zadana)</span>
+            <span id="s-dhw" class="stat-value hot">--°</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Zasilanie</span>
+            <span id="s-supply" class="stat-value temp">--°</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Na zewnątrz</span>
+            <span id="s-outside" class="stat-value cold">--°</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">CWU (bojler)</span>
+            <span id="s-dhw-actual" class="stat-value hot">--°</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Palnik</span>
+            <span id="s-burner" class="stat-value">--</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Tryb</span>
+            <span id="s-mode" class="stat-value" style="font-size: 1rem;">--</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Ciśnienie</span>
+            <span id="s-pressure" class="stat-value cold">--</span>
+          </div>
+        </div>
+        <p style="margin-top: 0.75rem; font-size: 0.7rem; color: var(--muted);">
+          Ostatni odczyt: <span id="s-time">--</span>
+        </p>
+      </div>
+
+      <!-- Sekcja: Sterowanie -->
+      <div class="card">
+        <h2>Sterowanie</h2>
+
+        <div class="control-row">
+          <label>🏠 CO</label>
+          <input type="range" id="ctrl-heating" min="3" max="37" value="20" step="1">
+          <span id="ctrl-heating-val" class="temp-display">20°</span>
+        </div>
+
+        <div class="control-row">
+          <label>🚿 CWU</label>
+          <input type="range" id="ctrl-dhw" min="10" max="60" value="40" step="1">
+          <span id="ctrl-dhw-val" class="temp-display">40°</span>
+        </div>
+
+        <button id="btn-set" class="btn-primary" style="margin-top: 0.5rem;">
+          ⚡ Ustaw temperatury
+        </button>
+      </div>
+
+      <button id="btn-refresh" class="btn-primary" style="background: var(--border); color: var(--text);">
+        🔄 Odśwież status
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ─── State ────────────────────────────────────────────────
+    let connected = false;
+
+    // ─── Helpers ──────────────────────────────────────────────
+    const $ = (sel) => document.querySelector(sel);
+    const show = (el) => el.classList.remove('hidden');
+    const hide = (el) => el.classList.add('hidden');
+
+    function showMsg(text, type = 'success') {
+      const el = $('#msg');
+      el.textContent = text;
+      el.className = `message message-${type}`;
+      show(el);
+      setTimeout(() => hide(el), 5000);
+    }
+
+    function fmt(val, suffix = '°C') {
+      return val !== null && val !== undefined ? `${val}${suffix}` : '--';
+    }
+
+    // ─── Check auth ──────────────────────────────────────────
+    async function checkAuth() {
+      try {
+        const res = await fetch('/api/auth/status');
+        const json = await res.json();
+        connected = json.data?.connected ?? false;
+
+        if (connected) {
+          hide($('#connect-section'));
+          show($('#status-section'));
+          loadStatus();
+        } else {
+          show($('#connect-section'));
+          hide($('#status-section'));
+          $('#connection-status').textContent = 'Nie połączono. Zaloguj się do Viessmann.';
+        }
+      } catch {
+        $('#connection-status').textContent = 'Błąd połączenia z serwerem.';
+      }
+    }
+
+    // ─── Load boiler status ──────────────────────────────────
+    async function loadStatus() {
+      try {
+        const res = await fetch('/api/status');
+        const json = await res.json();
+
+        if (!json.success) {
+          showMsg(json.error, 'error');
+          return;
+        }
+
+        const d = json.data;
+        $('#s-heating').textContent = fmt(d.heatingTarget);
+        $('#s-dhw').textContent = fmt(d.dhwTarget);
+        $('#s-supply').textContent = fmt(d.supplyTemp);
+        $('#s-outside').textContent = fmt(d.outsideTemp);
+        $('#s-dhw-actual').textContent = fmt(d.dhwActual);
+        $('#s-pressure').textContent = d.pressure !== null ? `${d.pressure} bar` : '--';
+        $('#s-mode').textContent = d.operatingMode ?? '--';
+
+        const burnerEl = $('#s-burner');
+        if (d.burnerActive === true) {
+          burnerEl.innerHTML = '<span class="badge badge-on">ON ' +
+            (d.burnerModulation !== null ? d.burnerModulation + '%' : '') + '</span>';
+        } else if (d.burnerActive === false) {
+          burnerEl.innerHTML = '<span class="badge badge-off">OFF</span>';
+        } else {
+          burnerEl.textContent = '--';
+        }
+
+        $('#s-time').textContent = new Date(d.readAt).toLocaleTimeString('pl-PL');
+
+        // Ustaw slidery na aktualne wartości
+        if (d.heatingTarget !== null) {
+          $('#ctrl-heating').value = d.heatingTarget;
+          $('#ctrl-heating-val').textContent = d.heatingTarget + '°';
+        }
+        if (d.dhwTarget !== null) {
+          $('#ctrl-dhw').value = d.dhwTarget;
+          $('#ctrl-dhw-val').textContent = d.dhwTarget + '°';
+        }
+      } catch (err) {
+        showMsg('Błąd odczytu statusu: ' + err.message, 'error');
+      }
+    }
+
+    // ─── Set temperatures ────────────────────────────────────
+    async function setTemperatures() {
+      const btn = $('#btn-set');
+      btn.disabled = true;
+      btn.textContent = '⏳ Ustawianie...';
+
+      const heatingTemp = parseInt($('#ctrl-heating').value);
+      const dhwTemp = parseInt($('#ctrl-dhw').value);
+
+      try {
+        // Ustaw CO
+        const resH = await fetch('/api/temperature', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ program: 'heating', temperature: heatingTemp }),
+        });
+        const jsonH = await resH.json();
+        if (!jsonH.success) throw new Error(`CO: ${jsonH.error}`);
+
+        // Ustaw CWU
+        const resD = await fetch('/api/temperature', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ program: 'dhw', temperature: dhwTemp }),
+        });
+        const jsonD = await resD.json();
+        if (!jsonD.success) throw new Error(`CWU: ${jsonD.error}`);
+
+        showMsg(`✅ CO → ${heatingTemp}°C, CWU → ${dhwTemp}°C`);
+        await loadStatus();
+      } catch (err) {
+        showMsg('❌ ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '⚡ Ustaw temperatury';
+      }
+    }
+
+    // ─── Event listeners ─────────────────────────────────────
+    $('#ctrl-heating').addEventListener('input', (e) => {
+      $('#ctrl-heating-val').textContent = e.target.value + '°';
+    });
+
+    $('#ctrl-dhw').addEventListener('input', (e) => {
+      $('#ctrl-dhw-val').textContent = e.target.value + '°';
+    });
+
+    $('#btn-set').addEventListener('click', setTemperatures);
+    $('#btn-refresh').addEventListener('click', loadStatus);
+
+    // ─── Init ────────────────────────────────────────────────
+    // Sprawdź czy wróciliśmy z OAuth
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('connected') === 'true') {
+      showMsg('✅ Połączono z Viessmann!');
+      window.history.replaceState({}, '', '/');
+    }
+
+    checkAuth();
+
+    // Auto-refresh co 30 sekund
+    setInterval(() => {
+      if (connected) loadStatus();
+    }, 30_000);
+  </script>
+</body>
+</html>

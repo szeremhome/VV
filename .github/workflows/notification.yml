@@ -1,9 +1,28 @@
-name: Scheduled NTFY Notification
+name: V Scheduled setup and notify
 
 on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Tryb pracy
+        type: choice
+        options: [heating, standby]
+        default: standby
+      temperature:
+        description: Temperatura CO
+        type: string
+        default: "21"
+      
   schedule:
-    # Uruchamia się codziennie o 8:00 UTC
-    - cron: '0 8 * * *'
+    - cron: "01 06 * * 1-5"    # pon-pt rano grzanie on 
+    - cron: "01 07 * * 1-5"    # pon-pt rano grzanie off    
+    - cron: "25 17 * * 1-5"    # pon-pt rano grzanie on 
+    - cron: "01 19 * * 1-5"    # pon-pt rano grzanie off
+
+    # - cron: "7 20 * * 1-5"   # pon-pt 20:07 UTC: standby
+    # - cron: "7 6 * * 0,6"    # sob-nd 06:07 UTC: grzanie 20
+
+
 
 jobs:
   send-scheduled-notification:
@@ -11,11 +30,40 @@ jobs:
     steps:
       - name: Wyślij powiadomienie przez ntfy
         env:
+          BASE: "${{ secrets.V_BASE }}"
+          ACCESS_TOKEN: "${{ secrets.V_ACCESS_TOKEN}}"
           NTFY_URL: "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}"
+          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_MODE: ${{ inputs.mode }}
+          INPUT_TEMP: ${{ inputs.temperature }}          
         run: |
+          set -euo pipefail
+
+          case "$SCHEDULE" in
+            "0 4 * * 1-5")  MODE=heating; TEMPERATURE=21 ;;
+            "0 5 * * 1-5")  MODE=heating; TEMPERATURE=18 ;;
+            "0 20 * * 1-5") MODE=standby; TEMPERATURE=0 ;;
+            "0 6 * * 0,6")  MODE=heating; TEMPERATURE=20 ;;
+            *)              MODE="${INPUT_MODE:-heating}"; TEMPERATURE="${INPUT_TEMP:-21}" ;;
+          esac
+          echo "Tryb: $MODE, temperatura: $TEMPERATURE"
+
+          # 1. Aktywacja CO
+          curl -fsS -X POST "$BASE/heating.circuits.0.operating.modes.active/commands/setMode" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"mode": "heating"}'
+
+          # 2. Ustawienie temperatury
+          curl -fsS -X POST "$BASE//heating.circuits.0.operating.programs.normal/commands/setTemperature" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"targetTemperature": "33"}'
+
+          # 3. Wysłanie powiadomienia
           curl -s \
-            -H "Title: Raport z GitHuba" \
+            -H "Title: Aktywacja CO" \
             -H "Priority: default" \
             -H "Tags: calendar" \
-            -d "Czas na codzienne przypomnienie! Workflow scheduler'a działa poprawnie." \
+            -d "Aktywacja CO i ustawienie temperatury 35." \
             $NTFY_URL
