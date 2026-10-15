@@ -43,11 +43,11 @@ jobs:
           # esac
           echo "Tryb: $BASE, temperatura: $SCHEDULE"
 
-          # # 1. Aktywacja CO
-          # curl -fsS -X POST "$BASE/heating.circuits.0.operating.modes.active/commands/setMode" \
-          #   -H "Authorization: Bearer $ACCESS_TOKEN" \
-          #   -H "Content-Type: application/json" \
-          #   -d '{"mode": "heating"}'
+          # 1. Aktywacja CO
+          curl -fsS -X POST "$BASE/heating.circuits.0.operating.modes.active/commands/setMode" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"mode": "heating"}'
 
           # # 2. Ustawienie temperatury
           # curl -fsS -X POST "$BASE//heating.circuits.0.operating.programs.normal/commands/setTemperature" \
