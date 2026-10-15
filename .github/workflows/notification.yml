@@ -28,7 +28,7 @@ jobs:
           BASE: "${{ secrets.V_BASE }}"
           ACCESS_TOKEN: "${{ secrets.V_ACCESS_TOKEN}}"
           NTFY_URL: "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}"
-          # SCHEDULE: ${{ github.event.schedule }}
+          SCHEDULE: ${{ github.event.schedule }}
           # INPUT_MODE: ${{ inputs.mode }}
           # INPUT_TEMP: ${{ inputs.temperature }}          
         run: |
@@ -41,19 +41,19 @@ jobs:
           #   "0 6 * * 0,6")  MODE=heating; TEMPERATURE=20 ;;
           #   *)              MODE="${INPUT_MODE:-heating}"; TEMPERATURE="${INPUT_TEMP:-21}" ;;
           # esac
-          # echo "Tryb: $MODE, temperatura: $TEMPERATURE"
+          echo "Tryb: $BASE, temperatura: $SCHEDULE"
 
-          # 1. Aktywacja CO
-          curl -fsS -X POST "$BASE/heating.circuits.0.operating.modes.active/commands/setMode" \
-            -H "Authorization: Bearer $ACCESS_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{"mode": "heating"}'
+          # # 1. Aktywacja CO
+          # curl -fsS -X POST "$BASE/heating.circuits.0.operating.modes.active/commands/setMode" \
+          #   -H "Authorization: Bearer $ACCESS_TOKEN" \
+          #   -H "Content-Type: application/json" \
+          #   -d '{"mode": "heating"}'
 
-          # 2. Ustawienie temperatury
-          curl -fsS -X POST "$BASE//heating.circuits.0.operating.programs.normal/commands/setTemperature" \
-            -H "Authorization: Bearer $ACCESS_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{"targetTemperature": "33"}'
+          # # 2. Ustawienie temperatury
+          # curl -fsS -X POST "$BASE//heating.circuits.0.operating.programs.normal/commands/setTemperature" \
+          #   -H "Authorization: Bearer $ACCESS_TOKEN" \
+          #   -H "Content-Type: application/json" \
+          #   -d '{"targetTemperature": "33"}'
 
           # 3. Wysłanie powiadomienia
           curl -s \
