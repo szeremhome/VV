@@ -19,11 +19,6 @@ on:
     - cron: "30 17 * * 1-5"    # pon-pt rano grzanie on 
     - cron: "01 19 * * 1-5"    # pon-pt rano grzanie off
 
-    # - cron: "7 20 * * 1-5"   # pon-pt 20:07 UTC: standby
-    # - cron: "7 6 * * 0,6"    # sob-nd 06:07 UTC: grzanie 20
-
-
-
 jobs:
   send-scheduled-notification:
     runs-on: ubuntu-latest
